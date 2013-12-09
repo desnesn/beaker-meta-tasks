@@ -5,6 +5,8 @@ set -e
 
 if [ -e /etc/beaker/server.cfg ] ; then
     sed --regexp-extended --in-place=-orig --copy -e '
+        /^#?beaker\.log_delete_user/c       beaker.log_delete_user = "log-delete"
+        /^#?beaker\.log_delete_password/c   beaker.log_delete_password = "password"
         /^#?tg\.url_domain/c                tg.url_domain = "localhost"
         /^#?mail\.on/c                      mail.on = True
         /^#?mail\.smtp\.server/c            mail.smtp.server = "127.0.0.1:19999"

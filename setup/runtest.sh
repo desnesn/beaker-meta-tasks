@@ -298,6 +298,52 @@ EOF
         rlPhaseEnd
     fi
 
+    rlPhaseStartTest "Configuring apache for WebDav DELETE"
+    rlRun "yum install -y httpd-tools" 0 "Installing htdigest"
+    rlRun "yum install -y expect" 0 "Installing expect"
+    rlRun "mkdir /var/www/auth" 0
+    rlLog "Creating script to populate user file"
+    cat >/tmp/create_user_file.sh <<EOF
+#!/usr/bin/expect -f
+# run htdigest
+spawn htdigest -c /var/www/auth/.digest_pw $HOSTNAME log-delete
+expect {
+  -re "New password:" {
+    exp_send "password\r"
+    exp_continue
+  }
+  -re "Re-type new password:" {
+    exp_send "password\r"
+  }
+}
+interact
+EOF
+    rlAssert0 "Created script to populate user file" $?
+    chmod +x /tmp/create_user_file.sh
+    rlRun "/tmp/create_user_file.sh" 0 "Populating user file"
+    rlLog "Adding DAV configuration to apache conf"
+    cat >/etc/httpd/conf.d/beaker-log-delete.conf <<EOF
+<DirectoryMatch "/var/www/(beaker/logs|html/beaker\-logs)">
+        Options Indexes Multiviews
+        Order allow,deny
+        Allow from all
+
+        <LimitExcept GET HEAD>
+                Dav On
+                AuthType Digest
+                AuthDigestDomain /var/www/beaker/logs/
+                AuthDigestProvider file
+                AuthUserFile /var/www/auth/.digest_pw
+                Require user log-delete
+                AuthName "$HOSTNAME"
+        </LimitExcept>
+</DirectoryMatch>
+EOF
+    rlAssert0 "Wrote WebDav DELETE config for Beaker lab controller" $?
+    rlLog "Restarting Apache"
+    rlServiceStop httpd
+    rlServiceStart httpd
+    rlPhaseEnd
     if [ -n "$ENABLE_COLLECTD" ] ; then
         rlPhaseStartTest "Enable collectd for metrics collection"
         rlRun "yum install -y collectd"
