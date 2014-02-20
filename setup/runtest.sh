@@ -56,6 +56,9 @@ EOF
 function InstallInventory_git()
 {
     rlRun "yum install --nogpg -y beaker-server"
+    if [[ "$(rpm -q beaker-server)" != *.git.* ]] ; then
+        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
+    fi
 }
 
 function InstallInventory_repo()
@@ -66,6 +69,9 @@ function InstallInventory_repo()
 function InstallLabController_git()
 {
     rlRun "yum install --nogpg -y beaker-lab-controller beaker-lab-controller-addDistro"
+    if [[ "$(rpm -q beaker-lab-controller)" != *.git.* ]] ; then
+        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
+    fi
 }
 
 function InstallLabController_repo()
@@ -139,6 +145,7 @@ function Inventory()
 
     rlPhaseStartTest "Install Beaker server"
     InstallInventory$SOURCE || rlDie "Installing Beaker server failed"
+    rlLog "Installed $(rpm -q beaker-server)"
     rlPhaseEnd
 
     rlPhaseStartTest "Configure Beaker server"
@@ -234,6 +241,7 @@ function LabController()
 {
     rlPhaseStartTest "Install Beaker lab controller"
     InstallLabController$SOURCE || rlDie "Installing lab controller failed"
+    rlLog "Installed $(rpm -q beaker-lab-controller)"
     rlPhaseEnd
 
     rlPhaseStartTest "Configure Beaker lab controller"
