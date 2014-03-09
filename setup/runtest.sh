@@ -37,8 +37,8 @@ function BuildBeaker ()
         rlRun "git fetch $BEAKER_GIT_REMOTE ${BEAKER_GIT_REMOTE_REF:-develop}"
         rlRun "git ${BEAKER_GIT_REMOTE_MERGE:-checkout} FETCH_HEAD" \
             || rlDie "Git checkout/merge failed"
-        rlRun "git submodule update --init"
     fi
+    rlRun "git submodule update --init"
     rlRun "yum-builddep -y ./beaker.spec"
     rlRun "yum -y install createrepo rpm-build"
     rlRun "Misc/rpmbuild.sh -bb" || rlDie "RPM build failed"
