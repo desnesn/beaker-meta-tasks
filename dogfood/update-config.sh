@@ -18,6 +18,7 @@ if [ -e /etc/beaker/server.cfg ] ; then
         /^#?identity\.soldapprovider\.uri/c identity.soldapprovider.uri = "ldap://localhost:3899/"
         /^#?identity\.soldapprovider\.basedn/c identity.soldapprovider.basedn = "dc=example,dc=invalid"
         /^#?identity\.soldapprovider\.autocreate/c identity.soldapprovider.autocreate = True
+        /^#?openstack\.dashboard_url/c      openstack.dashboard_url = "http://openstack.example.invalid/dashboard/"
         ' /etc/beaker/server.cfg
 fi
 
