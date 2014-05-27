@@ -76,6 +76,7 @@ $(METADATA): Makefile
 	@echo "Requires:     $(PACKAGE_NAME)" >> $(METADATA)  
 	@echo "Requires:     mysql-server" >> $(METADATA)  
 	@echo "Requires:     MySQL-python" >> $(METADATA)  
+	@echo "Requires:     tftp-server" >> $(METADATA)
 	@echo "Requires:     autofs" >> $(METADATA)
 	@echo "Requires:     curl" >> $(METADATA)
 	@echo "Requires:     mod_ssl" >> $(METADATA)

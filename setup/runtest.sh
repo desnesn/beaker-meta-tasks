@@ -252,20 +252,6 @@ function LabController()
     echo "add_distro=1" > /etc/sysconfig/beaker_lab_import
     rlPhaseEnd
 
-    rlPhaseStartTest "Fetch netboot loaders"
-    # Using cobbler to get the netboot loaders..
-    rlServiceStart httpd cobblerd
-    # XXX for some reason cobblerd fails to 
-    # to start with rlServiceStart under systemd
-    if [[ $future_distro -eq 0 ]]; then
-        rlRun -c "systemctl start cobblerd" 0 "Start cobblerd"
-    fi
-
-    rlRun -c "cobbler get-loaders" 0 "get network boot loaders"
-    rlRun -c "cobbler sync" 0 "sync boot loaders to tftpboot"
-    rlServiceStop cobblerd
-    rlPhaseEnd
-
     rlPhaseStartTest "Configure firewall"
     # XXX we can do better than this
     if [[ $future_distro -eq 0 ]]; then
