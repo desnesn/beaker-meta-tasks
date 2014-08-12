@@ -62,7 +62,7 @@ $(METADATA): Makefile
 	@echo "License:      GPL-2" >> $(METADATA)
 	@echo "TestVersion:  $(TESTVERSION)"	>> $(METADATA)
 	@echo "Description:  Runs Beaker's internal test suite" >> $(METADATA)
-	@echo "TestTime:     4h" >> $(METADATA)
+	@echo "TestTime:     6h" >> $(METADATA)
 	@echo "RunFor:       $(PACKAGE_NAME)-server" >> $(METADATA)  
 	@echo "Requires:     $(PACKAGE_NAME)-integration-tests" >> $(METADATA)
 	@echo "Requires:     python-nose" >> $(METADATA)  
