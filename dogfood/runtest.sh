@@ -31,5 +31,9 @@ else
     export BEAKER_LABCONTROLLER_HOSTNAME="${HOSTNAME}"
 fi
 rhts-run-simple-test $TEST "nosetests -v $NOSEARGS" || :
+echo "Checking for leaked browser processes"
+if ps -ww -lf -Cfirefox | tee firefox-ps.out ; then
+    rhts-report-result $TEST/browser_leak FAIL firefox-ps.out
+fi
 rhts-submit-log -l /var/log/beaker/server-errors.log
 rhts-submit-log -l /var/log/beaker/server-debug.log
