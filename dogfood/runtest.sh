@@ -37,3 +37,5 @@ if ps -ww -lf -Cfirefox >firefox-ps.out ; then
 fi
 rhts-submit-log -l /var/log/beaker/server-errors.log
 rhts-submit-log -l /var/log/beaker/server-debug.log
+rhts-submit-log -l /var/log/httpd/access_log
+rhts-submit-log -l /var/log/httpd/error_log
