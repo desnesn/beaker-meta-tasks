@@ -19,6 +19,7 @@ if [ -e /etc/beaker/server.cfg ] ; then
         /^#?identity\.soldapprovider\.basedn/c identity.soldapprovider.basedn = "dc=example,dc=invalid"
         /^#?identity\.soldapprovider\.autocreate/c identity.soldapprovider.autocreate = True
         /^#?openstack\.dashboard_url/c      openstack.dashboard_url = "http://openstack.example.invalid/dashboard/"
+        $a                                  beaker.migration_test_dburi = "mysql://beaker:migration@localhost/beaker_migration_test?charset=utf8"
         ' /etc/beaker/server.cfg
 fi
 
