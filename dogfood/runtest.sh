@@ -23,7 +23,7 @@ if [[ "$SOURCE" == "git" ]] ; then
 else
     rhts-run-simple-test $TEST/yum_install "yum install -y beaker-integration-tests$VERSION"
 fi
-mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost IDENTIFIED BY 'migration';"
+mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
 report_result $TEST/create_migration_test_db $?
 rhts-run-simple-test $TEST/update_config "./update-config.sh"
 
