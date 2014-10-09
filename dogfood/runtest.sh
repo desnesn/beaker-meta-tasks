@@ -15,13 +15,16 @@
 #
 # Author: Dan Callaghan <dcallagh@redhat.com>
 
+. /usr/bin/rhts-environment.sh
+
 rhts-run-simple-test $TEST/beakerd_stop "/sbin/service beakerd stop"
 if [[ "$SOURCE" == "git" ]] ; then
     rhts-run-simple-test $TEST/yum_install_git "yum install -y /mnt/testarea/beaker/rpmbuild-output/noarch/beaker-integration-tests-*.rpm"
 else
     rhts-run-simple-test $TEST/yum_install "yum install -y beaker-integration-tests$VERSION"
 fi
-rhts-run-simple-test $TEST/create_migration_test_db "mysql -u root -e \"CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost IDENTIFIED BY 'migration';\""
+mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost IDENTIFIED BY 'migration';"
+report_result $TEST/create_migration_test_db $?
 rhts-run-simple-test $TEST/update_config "./update-config.sh"
 
 if echo $SERVERS | grep -q $HOSTNAME ; then
