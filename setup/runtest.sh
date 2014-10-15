@@ -101,7 +101,7 @@ function generate_proxy_cfg()
     cat << __EOF__ > /etc/beaker/labcontroller.conf
 HUB_URL = "http://$SERVER/bkr/"
 AUTH_METHOD = "password"
-USERNAME = "host/$HOSTNAME"
+USERNAME = "host/$(hostname -f)"
 PASSWORD = "testing"
 CACHE = True
 ARCHIVE_SERVER = "http://$SERVER/beaker-logs"
@@ -301,7 +301,7 @@ EOF
     cat >/tmp/create_user_file.sh <<EOF
 #!/usr/bin/expect -f
 # run htdigest
-spawn htdigest -c /var/www/auth/.digest_pw $HOSTNAME log-delete
+spawn htdigest -c /var/www/auth/.digest_pw $(hostname -f) log-delete
 expect {
   -re "New password:" {
     exp_send "password\r"
@@ -330,7 +330,7 @@ EOF
                 AuthDigestProvider file
                 AuthUserFile /var/www/auth/.digest_pw
                 Require user log-delete
-                AuthName "$HOSTNAME"
+                AuthName "$(hostname -f)"
         </LimitExcept>
 </DirectoryMatch>
 EOF
@@ -371,14 +371,14 @@ if [[ "$(getenforce)" == "Enforcing" ]] ; then
     rlLogWarning "SELinux in enforcing mode, Beaker is not likely to work!"
 fi
 
-if $(echo $CLIENTS | grep -q $HOSTNAME); then
+if $(echo $CLIENTS | grep -q $(hostname -f)); then
     rlLog "Running as Lab Controller using Inventory: ${SERVERS}"
     SERVER=$(echo $SERVERS | awk '{print $1}')
     [[ $SOURCE == "_git" ]] && BuildBeaker
     LabController
 fi
 
-if $(echo $SERVERS | grep -q $HOSTNAME); then
+if $(echo $SERVERS | grep -q $(hostname -f)); then
     rlLog "Running as Inventory using Lab Controllers: ${CLIENTS}"
     [[ $SOURCE == "_git" ]] && BuildBeaker
     Inventory
