@@ -27,12 +27,12 @@ mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_mig
 report_result $TEST/create_migration_test_db $?
 rhts-run-simple-test $TEST/update_config "./update-config.sh"
 
-if echo $SERVERS | grep -q $HOSTNAME ; then
+if echo $SERVERS | grep -q $(hostname -f) ; then
     echo "Running with remote lab controller: ${CLIENTS}"
     export BEAKER_LABCONTROLLER_HOSTNAME="${CLIENTS}"
 else
     echo "Running in single-host mode"
-    export BEAKER_LABCONTROLLER_HOSTNAME="${HOSTNAME}"
+    export BEAKER_LABCONTROLLER_HOSTNAME="$(hostname -f)"
 fi
 rhts-run-simple-test $TEST "nosetests -v $NOSEARGS" || :
 echo "Checking for leaked browser processes"
