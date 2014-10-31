@@ -294,28 +294,11 @@ EOF
     fi
 
     rlPhaseStartTest "Configuring apache for WebDav DELETE"
-    rlRun "yum install -y httpd-tools" 0 "Installing htdigest"
-    rlRun "yum install -y expect" 0 "Installing expect"
     rlRun "mkdir /var/www/auth" 0
-    rlLog "Creating script to populate user file"
-    cat >/tmp/create_user_file.sh <<EOF
-#!/usr/bin/expect -f
-# run htdigest
-spawn htdigest -c /var/www/auth/.digest_pw $(hostname -f) log-delete
-expect {
-  -re "New password:" {
-    exp_send "password\r"
-    exp_continue
-  }
-  -re "Re-type new password:" {
-    exp_send "password\r"
-  }
-}
-interact
-EOF
-    rlAssert0 "Created script to populate user file" $?
-    chmod +x /tmp/create_user_file.sh
-    rlRun "/tmp/create_user_file.sh" 0 "Populating user file"
+    local user=log-delete realm="$(hostname -f)" password=password
+    echo "$user:$realm:$(echo -n "$user:$realm:$password" | md5sum - | cut -d' ' -f1)" >/var/www/auth/.digest_pw
+    rlAssert0 "Populated digest password file" $?
+    rlLog "Contents of digest password file: $(cat /var/www/auth/.digest_pw)"
     rlLog "Adding DAV configuration to apache conf"
     cat >/etc/httpd/conf.d/beaker-log-delete.conf <<EOF
 <DirectoryMatch "/var/www/(beaker/logs|html/beaker\-logs)">
