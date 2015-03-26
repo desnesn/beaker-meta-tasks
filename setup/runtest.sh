@@ -128,18 +128,32 @@ __EOF__
 function Inventory()
 {
     rlPhaseStartTest "Install database"
-    rlRun "yum install -y mysql-server MySQL-python" 0
-    # Backup /etc/my.cnf and update the config
-    rlRun "cp /etc/my.cnf /etc/my.cnf-orig" 0
-    cat /etc/my.cnf-orig | awk '
-        {print $0};
-        /\[mysqld\]/ {
-            print "max_allowed_packet=50M";
-            print "character-set-server=utf8";
-            print ENVIRON["MYSQL_EXTRA_CONFIG"];
-        }' > /etc/my.cnf
-    rlAssert0 "Configured /etc/my.cnf" $?
-    rlServiceStart mysqld
+    if rlIsRHEL 7 ; then
+        rlAssertRpm mariadb-server
+        rlAssertRpm MySQL-python
+        cat >/etc/my.cnf.d/beaker.cnf <<EOF
+[mysqld]
+max_allowed_packet=50M
+character_set_server=utf8
+$MYSQL_EXTRA_CONFIG
+EOF
+        rlAssert0 "Wrote /etc/my.cnf.d/beaker.cnf" $?
+        rlServiceStart mariadb
+    else
+        rlAssertRpm mysql-server
+        rlAssertRpm MySQL-python
+        # Backup /etc/my.cnf and update the config
+        rlRun "cp /etc/my.cnf /etc/my.cnf-orig" 0
+        cat /etc/my.cnf-orig | awk '
+            {print $0};
+            /\[mysqld\]/ {
+                print "max_allowed_packet=50M";
+                print "character-set-server=utf8";
+                print ENVIRON["MYSQL_EXTRA_CONFIG"];
+            }' > /etc/my.cnf
+        rlAssert0 "Configured /etc/my.cnf" $?
+        rlServiceStart mysqld
+    fi
     rlRun "mysql -u root -e \"CREATE DATABASE beaker;\"" 0 "Creating database 'beaker'"
     rlRun "mysql -u root -e \"GRANT ALL ON beaker.* TO beaker@localhost IDENTIFIED BY 'beaker';\"" 0 "Granting privileges to the user 'beaker@localhost'"
     rlPhaseEnd

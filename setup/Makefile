@@ -75,6 +75,7 @@ $(METADATA): Makefile
 	@echo "RunFor:       $(PACKAGE_NAME)" >> $(METADATA)  
 	@echo "Requires:     $(PACKAGE_NAME)" >> $(METADATA)  
 	@echo "Requires:     mysql-server" >> $(METADATA)  
+	@echo "Requires:     mariadb-server" >> $(METADATA)
 	@echo "Requires:     MySQL-python" >> $(METADATA)  
 	@echo "Requires:     tftp-server" >> $(METADATA)
 	@echo "Requires:     autofs" >> $(METADATA)
