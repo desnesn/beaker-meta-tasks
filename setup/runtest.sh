@@ -254,9 +254,11 @@ EOF
         rlPhaseEnd
     fi
 
-    rlPhaseStartTest "SERVERREADY"
-    rlRun "rhts-sync-set -s SERVERREADY" 0 "Inventory ready"
-    rlPhaseEnd
+    if [[ "$SERVER" != "$(hostname -f)" ]] ; then
+        rlPhaseStartTest "SERVERREADY"
+        rlRun "rhts-sync-set -s SERVERREADY" 0 "Inventory ready"
+        rlPhaseEnd
+    fi
 }
 
 function LabController()
@@ -283,9 +285,11 @@ function LabController()
     fi
     rlPhaseEnd
 
-    rlPhaseStartTest "Wait for SERVERREADY"
-    rlRun "rhts-sync-block -s SERVERREADY -s ABORT $SERVER" 0 "Wait for Server to become ready"
-    rlPhaseEnd
+    if [[ "$SERVER" != "$(hostname -f)" ]] ; then
+        rlPhaseStartTest "Wait for SERVERREADY"
+        rlRun "rhts-sync-block -s SERVERREADY -s ABORT $SERVER" 0 "Wait for Server to become ready"
+        rlPhaseEnd
+    fi
 
     rlPhaseStartTest "Start services"
     if [[ $future_distro -eq 0 ]]; then
