@@ -127,12 +127,11 @@ function Inventory()
 {
     rlPhaseStartTest "Install database"
     rlRun "yum install -y mysql-server MySQL-python" 0
-    # Backup /etc/my.cnf and make INNODB the default engine.
+    # Backup /etc/my.cnf and update the config
     rlRun "cp /etc/my.cnf /etc/my.cnf-orig" 0
     cat /etc/my.cnf-orig | awk '
         {print $0};
         /\[mysqld\]/ {
-            print "default-storage-engine=INNODB";
             print "max_allowed_packet=50M";
             print "character-set-server=utf8";
             print ENVIRON["MYSQL_EXTRA_CONFIG"];
