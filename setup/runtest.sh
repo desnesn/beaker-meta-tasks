@@ -33,6 +33,8 @@ function BuildBeaker ()
     rlRun "git clone git://git.beaker-project.org/beaker /mnt/testarea/beaker"
     rlRun "pushd /mnt/testarea/beaker"
     rlRun "git checkout ${BEAKER_GIT_REF:-develop}"
+    # We create a separate branch with the patch(es)
+    rlRun "git checkout -b dogfood"
     if [[ -n "$BEAKER_GIT_REMOTE" ]] ; then
         rlRun "git fetch $BEAKER_GIT_REMOTE ${BEAKER_GIT_REMOTE_REF:-develop}"
         rlRun "git ${BEAKER_GIT_REMOTE_MERGE:-checkout} FETCH_HEAD" \
