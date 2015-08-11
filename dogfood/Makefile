@@ -16,39 +16,25 @@
 TOPLEVEL_NAMESPACE=distribution
 PACKAGE_NAME=beaker
 RELATIVE_PATH=dogfood
-export TESTVERSION=1.2
+export TESTVERSION=1.3
 export TEST=/$(TOPLEVEL_NAMESPACE)/$(PACKAGE_NAME)/$(RELATIVE_PATH)
 
-SELENIUM_SERVER_VERSION=2.35.0
-
-.PHONY: all install download clean
+.PHONY: all install clean
 
 # executables to be built should be added here, they will be generated on the system under test.
 BUILT_FILES= 
 
-DOWNLOADED_FILES=selenium-server-standalone-$(SELENIUM_SERVER_VERSION).jar
-
 # data files, .c files, scripts anything needed to either compile the test and/or run it.
-FILES=$(METADATA) runtest.sh update-config.sh Makefile PURPOSE $(DOWNLOADED_FILES)
+FILES=$(METADATA) runtest.sh update-config.sh Makefile PURPOSE
 
-run: $(FILES) build \
-     /usr/local/share/selenium/selenium-server-standalone-$(SELENIUM_SERVER_VERSION).jar
+run: $(FILES) build
 	./runtest.sh
 
 build: $(BUILT_FILES)
 	chmod a+x ./runtest.sh
 
-download: $(DOWNLOADED_FILES)
-
-selenium-server-standalone-$(SELENIUM_SERVER_VERSION).jar:
-	wget http://selenium.googlecode.com/files/$@
-
 clean:
-	rm -f *~ *.rpm $(BUILT_FILES) $(DOWNLOADED_FILES)
-
-/usr/local/share/selenium/selenium-server-standalone-$(SELENIUM_SERVER_VERSION).jar: selenium-server-standalone-$(SELENIUM_SERVER_VERSION).jar
-	mkdir -p $(@D)
-	cp -p $< $@
+	rm -f *~ *.rpm $(BUILT_FILES)
 
 # Include Common Makefile
 include /usr/share/rhts/lib/rhts-make.include
