@@ -34,7 +34,19 @@ else
     echo "Running in single-host mode"
     export BEAKER_LABCONTROLLER_HOSTNAME="$(hostname -f)"
 fi
-rhts-run-simple-test $TEST "nosetests -v $NOSEARGS" || :
+
+# Beaker 22 switched to py.test instead of nose. The bkr.inttest.conftest
+# module is a pytest local plugin, so we can use its presence as an indication
+# that we should be running py.test. If it's absent we fall back to nose to
+# support older Beaker branches.
+if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
+    echo "Running tests with py.test"
+    rhts-run-simple-test $TEST "py.test -v --pyargs bkr" || :
+else
+    echo "Running tests with nose"
+    rhts-run-simple-test $TEST "nosetests -v $NOSEARGS" || :
+fi
+
 echo "Checking for leaked browser processes"
 if ps -ww -lf -Cfirefox >firefox-ps.out ; then
     rhts-report-result $TEST/browser_leak FAIL firefox-ps.out
