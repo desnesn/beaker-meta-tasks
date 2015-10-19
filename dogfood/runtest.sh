@@ -41,7 +41,7 @@ fi
 # support older Beaker branches.
 if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
     echo "Running tests with py.test"
-    rhts-run-simple-test $TEST "py.test -v --pyargs bkr" || :
+    rhts-run-simple-test $TEST "py.test -v --pyargs bkr.inttest" || :
 else
     echo "Running tests with nose"
     rhts-run-simple-test $TEST "nosetests -v $NOSEARGS" || :

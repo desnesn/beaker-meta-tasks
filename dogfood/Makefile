@@ -57,6 +57,6 @@ $(METADATA): Makefile
 	@echo "Environment:  BEAKER_LABCONTROLLER_CONFIG_FILE=/etc/beaker/labcontroller.conf" >> $(METADATA)
 	@echo "Environment:  BEAKER_CLIENT_COMMAND=bkr" >> $(METADATA)
 	@echo "Environment:  BEAKER_WIZARD_COMMAND=beaker-wizard" >> $(METADATA)
-	@echo "Environment:  NOSEARGS=bkr" >> $(METADATA)
+	@echo "Environment:  NOSEARGS=bkr.inttest" >> $(METADATA)
 
 	rhts-lint $(METADATA)
