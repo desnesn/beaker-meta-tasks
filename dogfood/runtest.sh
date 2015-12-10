@@ -44,13 +44,24 @@ if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
     rhts-run-simple-test $TEST "/usr/bin/time py.test -v --pyargs $PACKAGES_TO_TEST" || :
 else
     echo "Running tests with nose"
-    rhts-run-simple-test $TEST "/usr/bin/time nosetests -v $PACKAGES_TO_TEST" || :
+    if [ -n "$COLLECT_COVERAGE" ] ; then
+        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v"
+        " --with-coverage --cover-package=bkr --cover-erase"
+        " --cover-html --cover-html-dir=covhtml --cover-xml $PACKAGES_TO_TEST" || :
+    else
+        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v $PACKAGES_TO_TEST" || :
+    fi
 fi
 
 echo "Checking for leaked browser processes"
 if ps -ww -lf -Cfirefox >firefox-ps.out ; then
     rhts-report-result $TEST/browser_leak FAIL firefox-ps.out
 fi
+
+for f in ./covhtml/*; do
+    rhts-submit-log -l $f
+done
+rhts-submit-log -l ./coverage.xml
 rhts-submit-log -l /var/log/beaker/server-errors.log
 rhts-submit-log -l /var/log/beaker/server-debug.log
 rhts-submit-log -l /var/log/httpd/access_log

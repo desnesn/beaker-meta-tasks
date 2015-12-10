@@ -187,6 +187,13 @@ __EOF__
         rlPhaseEnd
     fi
 
+    if [ -n "$COLLECT_COVERAGE" ] ; then
+        rlPhaseStartTest "Configure Beaker server for coverage collection"
+        sed -e "$ a\coverage=True" -i /etc/beaker/server.cfg
+        rlAssert0 "Collecting coverage for Beaker server" $?
+        rlPhaseEnd
+    fi
+
     rlPhaseStartTest "Start services"
     rlServiceStart httpd
     rlServiceStart beakerd
