@@ -41,10 +41,10 @@ fi
 # support older Beaker branches.
 if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
     echo "Running tests with py.test"
-    rhts-run-simple-test $TEST "/usr/bin/time py.test -v --pyargs bkr.inttest" || :
+    rhts-run-simple-test $TEST "/usr/bin/time py.test -v --pyargs $PACKAGES_TO_TEST" || :
 else
     echo "Running tests with nose"
-    rhts-run-simple-test $TEST "/usr/bin/time nosetests -v $NOSEARGS" || :
+    rhts-run-simple-test $TEST "/usr/bin/time nosetests -v $PACKAGES_TO_TEST" || :
 fi
 
 echo "Checking for leaked browser processes"
