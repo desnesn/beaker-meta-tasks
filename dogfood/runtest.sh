@@ -46,10 +46,13 @@ else
     echo "Running tests with nose"
     if [ -n "$COLLECT_COVERAGE" ] ; then
         rhts-run-simple-test $TEST "/usr/bin/time nosetests -v"\
+        " --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s'"\
         " --with-coverage --cover-package=bkr --cover-erase"\
         " --cover-html --cover-html-dir=covhtml --cover-xml $PACKAGES_TO_TEST" || :
     else
-        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v $PACKAGES_TO_TEST" || :
+        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v"\
+        " --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s'"\
+        " $PACKAGES_TO_TEST" || :
     fi
 fi
 
