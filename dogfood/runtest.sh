@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Copyright (c) 2010 Red Hat, Inc. All rights reserved. This copyrighted material 
 # is made available to anyone wishing to use, modify, copy, or
@@ -17,15 +17,29 @@
 
 . /usr/bin/rhts-environment.sh
 
-rhts-run-simple-test $TEST/beakerd_stop "/sbin/service beakerd stop"
+function run() {
+    phase="$1"
+    shift
+    echo -n "Running $phase ... "
+    OUTPUTFILE="./${phase}.log"
+    "$@" &>"$OUTPUTFILE"
+    if [ $? -eq 0 ] ; then
+        result=PASS
+    else
+        result=FAIL
+    fi
+    report_result "$TEST/$phase" "$result"
+    echo "$result"
+}
+
+run beakerd_stop /sbin/service beakerd stop
 if [[ "$SOURCE" == "git" ]] ; then
-    rhts-run-simple-test $TEST/yum_install_git "yum install -y /mnt/testarea/beaker/rpmbuild-output/noarch/beaker-integration-tests-*.rpm"
+    run yum_install_git yum install -y /mnt/testarea/beaker/rpmbuild-output/noarch/beaker-integration-tests-*.rpm
 else
-    rhts-run-simple-test $TEST/yum_install "yum install -y beaker-integration-tests$VERSION"
+    run yum_install yum install -y beaker-integration-tests$VERSION
 fi
-mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
-report_result $TEST/create_migration_test_db $?
-rhts-run-simple-test $TEST/update_config "./update-config.sh"
+run create_migration_test_db mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
+run update_config ./update-config.sh
 
 if echo $SERVERS | grep -q $(hostname -f) ; then
     echo "Running with remote lab controller: ${CLIENTS}"
@@ -41,13 +55,18 @@ fi
 # support older Beaker branches.
 if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
     echo "Running tests with py.test"
-    rhts-run-simple-test $TEST "/usr/bin/time py.test -v --pyargs $PACKAGES_TO_TEST" || :
+    run tests /usr/bin/time py.test -v --pyargs $PACKAGES_TO_TEST
 else
     echo "Running tests with nose"
     if [ -n "$COLLECT_COVERAGE" ] ; then
-        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' --with-coverage --cover-package=bkr --cover-erase --cover-html --cover-html-dir=covhtml --cover-xml $PACKAGES_TO_TEST" || :
+        run tests /usr/bin/time nosetests -v \
+            --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
+            --with-coverage --cover-package=bkr --cover-erase --cover-html --cover-html-dir=covhtml --cover-xml \
+            $PACKAGES_TO_TEST
     else
-        rhts-run-simple-test $TEST "/usr/bin/time nosetests -v --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' $PACKAGES_TO_TEST" || :
+        run tests /usr/bin/time nosetests -v \
+            --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
+            $PACKAGES_TO_TEST
     fi
 fi
 
