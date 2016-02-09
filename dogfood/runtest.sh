@@ -56,10 +56,12 @@ if ps -ww -lf -Cfirefox >firefox-ps.out ; then
     rhts-report-result $TEST/browser_leak FAIL firefox-ps.out
 fi
 
-for f in ./covhtml/*; do
-    rhts-submit-log -l $f
-done
-rhts-submit-log -l ./coverage.xml
+if [ -n "$COLLECT_COVERAGE" ] ; then
+    for f in ./covhtml/*; do
+        rhts-submit-log -l $f
+    done
+    rhts-submit-log -l ./coverage.xml
+fi
 rhts-submit-log -l /var/log/beaker/server-errors.log
 rhts-submit-log -l /var/log/beaker/server-debug.log
 rhts-submit-log -l /var/log/httpd/access_log
