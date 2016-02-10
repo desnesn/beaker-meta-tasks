@@ -28,8 +28,8 @@ function run() {
     else
         result=FAIL
     fi
-    report_result "$TEST/$phase" "$result"
     echo "$result"
+    report_result "$TEST/$phase" "$result"
 }
 
 run beakerd_stop /sbin/service beakerd stop
