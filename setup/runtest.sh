@@ -43,7 +43,7 @@ function BuildBeaker ()
     rlRun "git submodule update --init"
     rlRun "yum-builddep -y ./beaker.spec"
     rlRun "yum -y install createrepo rpm-build"
-    rlRun "Misc/rpmbuild.sh -bb" || rlDie "RPM build failed"
+    rlRun "Misc/rpmbuild.sh --next-major -bb" || rlDie "RPM build failed"
     rlRun "popd"
     rlRun "createrepo /mnt/testarea/beaker/rpmbuild-output/noarch/"
     cat >/etc/yum.repos.d/beaker-local-builds.repo <<"EOF"
