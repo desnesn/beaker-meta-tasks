@@ -1,0 +1,3 @@
+PURPOSE of /distribution/beaker/Sanity/reboot-tests
+Description: Verifies that rhts-reboot works correctly
+Author: Dan Callaghan <dcallagh@redhat.com>
