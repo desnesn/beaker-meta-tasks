@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Verifies that the rhts-sync-[set|block] tests work correctly" >> $(METADATA)
 	@echo "Type:            Sanity" >> $(METADATA)
-	@echo "TestTime:        10m" >> $(METADATA)
+	@echo "TestTime:        45m" >> $(METADATA)
 	@echo "RunFor:          beaker" >> $(METADATA)
 	@echo "Requires:        beaker" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
