@@ -59,13 +59,15 @@ if python -c 'import bkr.inttest.conftest' 2>/dev/null ; then
 else
     echo "Running tests with nose"
     if [ -n "$COLLECT_COVERAGE" ] ; then
-        run tests /usr/bin/time nosetests -v \
-            --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
+        run tests /usr/bin/time \
+            python -c '__requires__ = ["CherryPy < 3.0"]; import pkg_resources; from nose.core import main; main()' \
+            -v --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
             --with-coverage --cover-package=bkr --cover-erase --cover-html --cover-html-dir=covhtml --cover-xml \
             $PACKAGES_TO_TEST
     else
-        run tests /usr/bin/time nosetests -v \
-            --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
+        run tests /usr/bin/time \
+            python -c '__requires__ = ["CherryPy < 3.0"]; import pkg_resources; from nose.core import main; main()' \
+            -v --logging-format='%(asctime)s %(name)s %(levelname)s %(message)s' \
             $PACKAGES_TO_TEST
     fi
 fi
