@@ -22,7 +22,7 @@ function run() {
     shift
     echo -n "Running $phase ... "
     OUTPUTFILE="./${phase}.log"
-    "$@" &>"$OUTPUTFILE"
+    "$@" 2>&1 | tee "$OUTPUTFILE"
     if [ $? -eq 0 ] ; then
         result=PASS
     else
