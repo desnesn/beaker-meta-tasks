@@ -23,7 +23,7 @@ function run() {
     echo -n "Running $phase ... "
     OUTPUTFILE="./${phase}.log"
     "$@" 2>&1 | tee "$OUTPUTFILE"
-    if [ $? -eq 0 ] ; then
+    if [ "${PIPESTATUS[0]}" -eq 0 ] ; then
         result=PASS
     else
         result=FAIL
