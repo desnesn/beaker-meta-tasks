@@ -11,7 +11,7 @@ if [ -e /etc/beaker/server.cfg ] ; then
         /^#?mail\.on/c                      mail.on = True
         /^#?mail\.smtp\.server/c            mail.smtp.server = "127.0.0.1:19999"
         /^#?beaker\.reliable_distro_tag/c   beaker.reliable_distro_tag = "RELEASED"
-        /^#?beaker\.motd/c                  beaker.motd = "/usr/lib/python2.6/site-packages/bkr/inttest/server/motd.xml"
+        /^#?beaker\.motd/c                  beaker.motd = "/usr/share/beaker-integration-tests/motd.xml"
         /^#?beaker\.max_running_commands /c beaker.max_running_commands = 10
         /^#?beaker\.kernel_options /c       beaker.kernel_options = "noverifyssl"
         /^#?identity\.ldap\.enabled/c       identity.ldap.enabled = True
