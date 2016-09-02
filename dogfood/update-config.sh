@@ -40,3 +40,12 @@ if [ -e /etc/beaker/labcontroller.conf ] ; then
     service beaker-watchdog condrestart
     service beaker-transfer condrestart
 fi
+
+if [ -e /etc/cron.d/beaker ] ; then
+    # Comment out beaker-refresh-ldap cron job, since it won't do anything most 
+    # of the time, but it can interfere with tests which are invoking 
+    # beaker-refresh-ldap directly.
+    sed --in-place=-orig --copy -e '
+        /beaker-refresh-ldap/ s/^/#/
+        ' /etc/cron.d/beaker
+fi
