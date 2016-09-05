@@ -34,6 +34,7 @@ fi
 if [ -e /etc/beaker/labcontroller.conf ] ; then
     sed --regexp-extended --in-place=-orig --copy -e '
         $a SLEEP_TIME = 5
+        $a POWER_ATTEMPTS = 2
         ' /etc/beaker/labcontroller.conf
     service beaker-proxy condrestart
     service beaker-provision condrestart
