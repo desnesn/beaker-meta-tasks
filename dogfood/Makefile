@@ -51,7 +51,6 @@ $(METADATA): Makefile
 	@echo "TestTime:     6h" >> $(METADATA)
 	@echo "Requires:     $(PACKAGE_NAME)-integration-tests" >> $(METADATA)
 	@echo "Requires:     python-nose" >> $(METADATA)  
-	@echo "Environment:  BEAKER_SERVER_BASE_URL=http://localhost/bkr/" >> $(METADATA)
 #	@echo "Environment:  BEAKER_SKIP_INIT_DB=1" >> $(METADATA)
 	@echo "Environment:  BEAKER_CONFIG_FILE=/etc/beaker/server.cfg" >> $(METADATA)
 	@echo "Environment:  BEAKER_LABCONTROLLER_CONFIG_FILE=/etc/beaker/labcontroller.conf" >> $(METADATA)
