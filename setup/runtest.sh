@@ -115,7 +115,9 @@ __EOF__
     rlAssert0 "Wrote /etc/beaker/labcontroller.conf" $?
 }
 
-function generate_client_cfg() {
+function Client()
+{
+    rlPhaseStartTest "Configure Beaker client"
     cat <<__EOF__ >/etc/beaker/client.conf
 HUB_URL = "http://$SERVER/bkr"
 AUTH_METHOD = "password"
@@ -123,6 +125,7 @@ USERNAME = "admin"
 PASSWORD = "testing"
 __EOF__
     rlAssert0 "Wrote /etc/beaker/client.conf" $?
+    rlPhaseEnd
 }
 
 function Inventory()
@@ -271,8 +274,6 @@ function LabController()
     rlPhaseStartTest "Configure Beaker lab controller"
     # Configure beaker-proxy config
     generate_proxy_cfg
-    # configure beaker client
-    generate_client_cfg
     echo "add_distro=1" > /etc/sysconfig/beaker_lab_import
     rlPhaseEnd
 
@@ -384,12 +385,14 @@ if $(echo $CLIENTS | grep -q $(hostname -f)); then
     rlLog "Running as Lab Controller using Inventory: ${SERVERS}"
     SERVER=$(echo $SERVERS | awk '{print $1}')
     [[ $SOURCE == "_git" ]] && BuildBeaker
+    Client
     LabController
 fi
 
 if $(echo $SERVERS | grep -q $(hostname -f)); then
     rlLog "Running as Inventory using Lab Controllers: ${CLIENTS}"
     [[ $SOURCE == "_git" ]] && BuildBeaker
+    Client
     Inventory
 fi
 
@@ -399,6 +402,7 @@ if [ -z "$SERVERS" -o -z "$CLIENTS" ]; then
     SERVERS=$STANDALONE
     SERVER=$(echo $SERVERS | awk '{print $1}')
     [[ $SOURCE == "_git" ]] && BuildBeaker
+    Client
     Inventory
     LabController
 fi
