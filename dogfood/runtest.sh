@@ -48,7 +48,7 @@ else
     echo "Running in single-host mode"
     export BEAKER_LABCONTROLLER_HOSTNAME="$(hostname -f)"
 fi
-export BEAKER_SERVER_BASE_URL="http://$SERVERS/bkr/"
+export BEAKER_SERVER_BASE_URL="http://$(hostname -f)/bkr/"
 
 # Beaker 22 switched to py.test instead of nose. The bkr.inttest.conftest
 # module is a pytest local plugin, so we can use its presence as an indication
