@@ -27,61 +27,6 @@ function CheckDistro()
 
 CheckDistro
 
-function BuildBeaker ()
-{
-    rlPhaseStartTest "Build Beaker from git"
-    rlRun "git clone git://git.beaker-project.org/beaker /mnt/testarea/beaker"
-    rlRun "pushd /mnt/testarea/beaker"
-    rlRun "git checkout ${BEAKER_GIT_REF:-develop}"
-    # We create a separate branch with the patch(es)
-    rlRun "git checkout -b dogfood"
-    if [[ -n "$BEAKER_GIT_REMOTE" ]] ; then
-        rlRun "git fetch $BEAKER_GIT_REMOTE ${BEAKER_GIT_REMOTE_REF:-develop}"
-        rlRun "git ${BEAKER_GIT_REMOTE_MERGE:-checkout} FETCH_HEAD" \
-            || rlDie "Git checkout/merge failed"
-    fi
-    rlRun "git submodule update --init"
-    rlRun "yum-builddep -y ./beaker.spec"
-    rlRun "yum -y install createrepo rpm-build"
-    rlRun "Misc/rpmbuild.sh --next-major -bb" || rlDie "RPM build failed"
-    rlRun "popd"
-    rlRun "createrepo /mnt/testarea/beaker/rpmbuild-output/noarch/"
-    cat >/etc/yum.repos.d/beaker-local-builds.repo <<"EOF"
-[beaker-local-builds]
-name=beaker-local-builds
-baseurl=file:///mnt/testarea/beaker/rpmbuild-output/noarch/
-EOF
-    rlAssert0 "Created yum repo config for /mnt/testarea/beaker/rpmbuild-output/noarch/" $?
-    rlPhaseEnd
-}
-
-function InstallInventory_git()
-{
-    rlRun "yum install --nogpg -y beaker-server"
-    if [[ "$(rpm -q beaker-server)" != *.git.* ]] ; then
-        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
-    fi
-}
-
-function InstallInventory_repo()
-{
-    rlRun "yum install -y beaker-server$VERSION"
-}
-
-function InstallLabController_git()
-{
-    rlRun "yum install --nogpg -y beaker-lab-controller beaker-lab-controller-addDistro"
-    if [[ "$(rpm -q beaker-lab-controller)" != *.git.* ]] ; then
-        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
-    fi
-}
-
-function InstallLabController_repo()
-{
-    rlRun "yum install -y beaker-lab-controller$VERSION"
-    rlRun "yum install -y beaker-lab-controller-addDistro$VERSION"
-}
-
 function generate_rsync_cfg()
 {
     rlRun "mkdir -p /var/www/html/beaker-logs"
@@ -162,8 +107,11 @@ EOF
     rlPhaseEnd
 
     rlPhaseStartTest "Install Beaker server"
-    InstallInventory$SOURCE || rlDie "Installing Beaker server failed"
+    rlRun "yum install -y beaker-server$VERSION"
     rlLog "Installed $(rpm -q beaker-server)"
+    if [[ -n "$EXPECT_BEAKER_GIT_BUILD" && "$(rpm -q beaker-server)" != *.git.* ]] ; then
+        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
+    fi
     rlPhaseEnd
 
     rlPhaseStartTest "Configure Beaker server"
@@ -267,8 +215,11 @@ EOF
 function LabController()
 {
     rlPhaseStartTest "Install Beaker lab controller"
-    InstallLabController$SOURCE || rlDie "Installing lab controller failed"
+    rlRun "yum install -y beaker-lab-controller$VERSION beaker-lab-controller-addDistro$VERSION"
     rlLog "Installed $(rpm -q beaker-lab-controller)"
+    if [[ -n "$EXPECT_BEAKER_GIT_BUILD" && "$(rpm -q beaker-lab-controller)" != *.git.* ]] ; then
+        rlDie "Git build was not installed (hint: does destination branch contain latest tags?)"
+    fi
     rlPhaseEnd
 
     rlPhaseStartTest "Configure Beaker lab controller"
@@ -384,14 +335,12 @@ fi
 if $(echo $CLIENTS | grep -q $(hostname -f)); then
     rlLog "Running as Lab Controller using Inventory: ${SERVERS}"
     SERVER=$(echo $SERVERS | awk '{print $1}')
-    [[ $SOURCE == "_git" ]] && BuildBeaker
     Client
     LabController
 fi
 
 if $(echo $SERVERS | grep -q $(hostname -f)); then
     rlLog "Running as Inventory using Lab Controllers: ${CLIENTS}"
-    [[ $SOURCE == "_git" ]] && BuildBeaker
     Client
     Inventory
 fi
@@ -401,15 +350,10 @@ if [ -z "$SERVERS" -o -z "$CLIENTS" ]; then
     CLIENTS=$STANDALONE
     SERVERS=$STANDALONE
     SERVER=$(echo $SERVERS | awk '{print $1}')
-    [[ $SOURCE == "_git" ]] && BuildBeaker
     Client
     Inventory
     LabController
 fi
-
-rlPhaseStartCleanup
-rlRun "rm -f /etc/yum.repos.d/beaker-local-builds.repo" 0
-rlPhaseEnd
 
 rlJournalEnd
 rlJournalPrintText

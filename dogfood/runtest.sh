@@ -33,11 +33,6 @@ function run() {
 }
 
 run beakerd_stop /sbin/service beakerd stop
-if [[ "$SOURCE" == "git" ]] ; then
-    run yum_install_git yum install -y /mnt/testarea/beaker/rpmbuild-output/noarch/beaker-integration-tests-*.rpm
-else
-    run yum_install yum install -y beaker-integration-tests$VERSION
-fi
 run create_migration_test_db mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
 run update_config ./update-config.sh
 
