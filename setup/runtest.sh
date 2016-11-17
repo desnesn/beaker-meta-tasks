@@ -152,6 +152,17 @@ __EOF__
         rlPhaseEnd
     fi
 
+    if [ -n "$OPENSTACK_IDENTITY_API_URL" ] ; then
+        rlPhaseStartTest "Configure Beaker for OpenStack"
+        sed -i \
+            -e "/^#openstack.identity_api_url /c openstack.identity_api_url = '$OPENSTACK_IDENTITY_API_URL'" \
+            -e "/^#openstack.username /c openstack.username = '$OPENSTACK_BEAKER_USERNAME'" \
+            -e "/^#openstack.password /c openstack.password = '$OPENSTACK_BEAKER_PASSWORD'" \
+            /etc/beaker/server.cfg
+        rlAssert0 "Added OpenStack settings to /etc/beaker/server.cfg" $?
+        rlPhaseEnd
+    fi
+
     if [ -n "$COLLECT_COVERAGE" ] ; then
         rlPhaseStartTest "Configure Beaker server for coverage collection"
         sed -e "$ a\coverage=True" -i /etc/beaker/server.cfg
