@@ -49,7 +49,6 @@ $(METADATA): Makefile
 	@echo "TestVersion:  $(TESTVERSION)"	>> $(METADATA)
 	@echo "Description:  Runs Beaker's internal test suite" >> $(METADATA)
 	@echo "TestTime:     6h" >> $(METADATA)
-	@echo "Requires:     $(PACKAGE_NAME)-integration-tests" >> $(METADATA)
 	@echo "Requires:     python-nose" >> $(METADATA)  
 #	@echo "Environment:  BEAKER_SKIP_INIT_DB=1" >> $(METADATA)
 	@echo "Environment:  BEAKER_CONFIG_FILE=/etc/beaker/server.cfg" >> $(METADATA)

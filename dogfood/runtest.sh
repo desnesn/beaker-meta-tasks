@@ -33,6 +33,7 @@ function run() {
 }
 
 run beakerd_stop /sbin/service beakerd stop
+run yum_install yum install -y beaker-integration-tests$VERSION
 run create_migration_test_db mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
 run update_config ./update-config.sh
 
