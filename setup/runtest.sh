@@ -170,6 +170,21 @@ __EOF__
         rlPhaseEnd
     fi
 
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1478149
+    # gobject-introspection module loader deadlocks inside mod_wsgi.
+    # Workaround is from https://bugzilla.redhat.com/show_bug.cgi?id=1475969,
+    # configure python-keyring not to try importing the GNOME stuff.
+    if rlIsRHEL 7 ; then
+        rlPhaseStartTest "Work around bz1478149"
+        rlRun "mkdir -p /usr/share/httpd/.local/share/python_keyring/"
+        cat >/usr/share/httpd/.local/share/python_keyring/keyringrc.cfg <<EOF
+[backend]
+default-keyring=keyring.backends.file.EncryptedKeyring
+EOF
+        rlAssert0 "Wrote python-keyring config" $?
+        rlPhaseEnd
+    fi
+
     rlPhaseStartTest "Start services"
     rlServiceStart httpd
     rlServiceStart beakerd
