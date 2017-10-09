@@ -22,14 +22,6 @@ if [ -e /etc/beaker/server.cfg ] ; then
         ' /etc/beaker/server.cfg
 fi
 
-if [ -e /etc/httpd/conf.d/beaker-server.conf ] ; then
-    # reduce number of Apache worker processes, to save a bit of memory
-    sed --regexp-extended --in-place=-orig --copy -e '
-        /^WSGIDaemonProcess/ s@processes=[0-9]+@processes=2@
-        ' /etc/httpd/conf.d/beaker-server.conf
-    service httpd reload
-fi
-
 if [ -e /etc/beaker/labcontroller.conf ] ; then
     sed --regexp-extended --in-place=-orig --copy -e '
         $a SLEEP_TIME = 5
