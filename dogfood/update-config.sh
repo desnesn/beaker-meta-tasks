@@ -20,6 +20,7 @@ if [ -e /etc/beaker/server.cfg ] ; then
         /^#?openstack\.dashboard_url/c      openstack.dashboard_url = "http://openstack.example.invalid/dashboard/"
         /\[global\]/a                       beaker.migration_test_dburi = "mysql://beaker:beaker@localhost/beaker_migration_test?charset=utf8"
         ' /etc/beaker/server.cfg
+    service httpd reload
 fi
 
 if [ -e /etc/beaker/labcontroller.conf ] ; then
