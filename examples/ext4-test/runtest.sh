@@ -31,6 +31,7 @@
 
 rlJournalStart
     rlPhaseStartTest
+        rlRun "modprobe ext4" 0 "Ensure ext4 kernel module is loaded"
         rlRun "cat /proc/filesystems | grep 'ext4'" 0 "Check if ext4 is supported"
     rlPhaseEnd
 # Print the test report
