@@ -74,7 +74,7 @@ $(METADATA): Makefile
 	@echo "TestTime:     4h" >> $(METADATA)
 	@echo "Requires:     beakerlib" >> $(METADATA)
 	@echo "Requires:     mysql-server" >> $(METADATA)
-	@echo "Requires:     mariadb-server" >> $(METADATA)
+	@echo "Requires:     rh-mariadb102" >> $(METADATA)
 	@echo "Requires:     MySQL-python" >> $(METADATA)
 	@echo "Requires:     tftp-server" >> $(METADATA)
 	@echo "Requires:     autofs" >> $(METADATA)

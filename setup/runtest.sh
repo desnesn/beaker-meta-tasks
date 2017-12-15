@@ -77,7 +77,7 @@ function Inventory()
 {
     rlPhaseStartTest "Install database"
     if rlIsRHEL 7 ; then
-        rlAssertRpm mariadb-server
+        rlAssertRpm rh-mariadb102-mariadb-server
         rlAssertRpm MySQL-python
         cat >/etc/my.cnf.d/beaker.cnf <<EOF
 [mysqld]
@@ -86,7 +86,7 @@ character_set_server=utf8
 $MYSQL_EXTRA_CONFIG
 EOF
         rlAssert0 "Wrote /etc/my.cnf.d/beaker.cnf" $?
-        rlServiceStart mariadb
+        rlServiceStart rh-mariadb102-mariadb
     else
         rlAssertRpm mysql-server
         rlAssertRpm MySQL-python
