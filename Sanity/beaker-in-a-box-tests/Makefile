@@ -24,7 +24,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 export TEST=/distribution/beaker/Sanity/beaker-in-a-box
-export TESTVERSION=1.0
+export TESTVERSION=1.1
 
 BUILT_FILES=
 

@@ -32,6 +32,7 @@
 
 rlJournalStart
     rlPhaseStartSetup
+        REFSPEC=${GERRIT_REFSPEC:-master}
         for PACKAGE in ansible git libvirt libvirt-daemon-kvm
         do
             if ! rlCheckRpm $PACKAGE; then
@@ -43,9 +44,10 @@ rlJournalStart
         rlRun "ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ''" 0 "Generated ssh rsa keys"
         rlRun "git clone http://gerrit.beaker-project.org/beaker-in-a-box" 0 "Cloned beaker-in-a-box code from repo"
         rlRun "cd beaker-in-a-box" 0 "Enter beaker-in-a-box directory"
+        rlRun "git pull http://gerrit.beaker-project.org/beaker-in-a-box ${REFSPEC}" 0 "Pulling ${REFSPEC}"
     rlPhaseEnd
 
     rlPhaseStartTest
-        rlRun "ansible-playbook test.yml" 0 "Run testing of ansible-playbook"
+        rlRun "ansible-playbook test.yml ${ANSIBLE_PLAYBOOK_PARAMS}" 0 "Run testing of ansible-playbook"
     rlPhaseEnd
 rlJournalEnd
