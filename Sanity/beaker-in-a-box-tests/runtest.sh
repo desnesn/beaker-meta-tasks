@@ -46,6 +46,11 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartTest
-        rlRun "ansible-playbook test.yml" 0 "Run testing of ansible-playbook"
+        REFSPEC=${GERRIT_REFSPEC:-master}
+        rlRun "git pull http://gerrit.beaker-project.org/beaker-in-a-box ${REFSPEC}" 0 "Pulling ${REFSPEC}"
+    rlPhaseEnd
+
+    rlPhaseStartTest
+        rlRun "ansible-playbook test.yml ${ANSIBLE_PLAYBOOK_PARAMS}" 0 "Run testing of ansible-playbook"
     rlPhaseEnd
 rlJournalEnd
