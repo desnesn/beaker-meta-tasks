@@ -75,6 +75,7 @@ $(METADATA): Makefile
 	@echo "Requires:     beakerlib" >> $(METADATA)
 	@echo "Requires:     mysql-server" >> $(METADATA)
 	@echo "Requires:     rh-mariadb102" >> $(METADATA)
+	@echo "Requires:     rh-mariadb102-mariadb-syspaths" >> $(METADATA)
 	@echo "Requires:     MySQL-python" >> $(METADATA)
 	@echo "Requires:     tftp-server" >> $(METADATA)
 	@echo "Requires:     autofs" >> $(METADATA)

@@ -78,6 +78,8 @@ function Inventory()
     rlPhaseStartTest "Install database"
     if rlIsRHEL 7 ; then
         rlAssertRpm rh-mariadb102-mariadb-server
+        # This one gives us /usr/bin/mysql as a wrapper script:
+        rlAssertRpm rh-mariadb102-mariadb-syspaths
         rlAssertRpm MySQL-python
         cat >/etc/opt/rh/rh-mariadb102/my.cnf.d/beaker.cnf <<EOF
 [mysqld]
