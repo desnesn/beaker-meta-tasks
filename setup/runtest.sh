@@ -79,13 +79,13 @@ function Inventory()
     if rlIsRHEL 7 ; then
         rlAssertRpm rh-mariadb102-mariadb-server
         rlAssertRpm MySQL-python
-        cat >/etc/my.cnf.d/beaker.cnf <<EOF
+        cat >/etc/opt/rh/rh-mariadb102/my.cnf.d/beaker.cnf <<EOF
 [mysqld]
 max_allowed_packet=50M
 character_set_server=utf8
 $MYSQL_EXTRA_CONFIG
 EOF
-        rlAssert0 "Wrote /etc/my.cnf.d/beaker.cnf" $?
+        rlAssert0 "Wrote /etc/opt/rh/rh-mariadb102/my.cnf.d/beaker.cnf" $?
         rlServiceStart rh-mariadb102-mariadb
     else
         rlAssertRpm mysql-server
