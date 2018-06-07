@@ -24,7 +24,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 export TEST=/CoreOS/examples/Sanity/ext4-test
-export TESTVERSION=1.0
+export TESTVERSION=1.1
 
 BUILT_FILES=
 
@@ -57,5 +57,6 @@ $(METADATA): Makefile
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
 	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5" >> $(METADATA)
+	@echo "Requires:        beakerlib" >> $(METADATA)
 
 	rhts-lint $(METADATA)
