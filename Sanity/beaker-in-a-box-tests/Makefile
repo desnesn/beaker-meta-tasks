@@ -56,5 +56,6 @@ $(METADATA): Makefile
 	@echo "License:         GPLv2+" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
+	@echo "Requires:        beakerlib" >> $(METADATA)
 
 	rhts-lint $(METADATA)
