@@ -32,7 +32,9 @@
 
 rlJournalStart
     rlPhaseStartSetup
+        CWD=$(pwd)
         REFSPEC=${GERRIT_REFSPEC:-master}
+
         for PACKAGE in ansible git libvirt libvirt-daemon-kvm
         do
             if ! rlCheckRpm $PACKAGE; then
@@ -41,13 +43,12 @@ rlJournalStart
             fi
         done
         rlServiceStart libvirtd
-        rlRun "ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ''" 0 "Generated ssh rsa keys"
-        rlRun "git clone http://gerrit.beaker-project.org/beaker-in-a-box" 0 "Cloned beaker-in-a-box code from repo"
-        rlRun "cd beaker-in-a-box" 0 "Enter beaker-in-a-box directory"
-        rlRun "git pull http://gerrit.beaker-project.org/beaker-in-a-box ${REFSPEC}" 0 "Pulling ${REFSPEC}"
+        rlRun "adduser -G wheel testuser" 0 "Create a test user"
+        rlRun "sed -i 's/^#\s*\(%wheel\s*ALL=(ALL)\s*NOPASSWD:\s*ALL\)/\1/' /etc/sudoers" 0 "Allow NOPASSWD sudo privileges"
+        rlRun "sudo -n -H -E -u testuser ${CWD}/setup.sh" 0 "Generated ssh rsa keys"
     rlPhaseEnd
 
     rlPhaseStartTest
-        rlRun "ansible-playbook test.yml ${ANSIBLE_PLAYBOOK_PARAMS}" 0 "Run testing of ansible-playbook"
+        rlRun "sudo -n -H -E -u testuser ${CWD}/runplaybook.sh" 0 "Run testing of ansible-playbook"
     rlPhaseEnd
 rlJournalEnd
