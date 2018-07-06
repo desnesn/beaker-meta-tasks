@@ -76,7 +76,19 @@ __EOF__
 function Inventory()
 {
     rlPhaseStartTest "Install database"
-    if rlIsRHEL 7 ; then
+    if rlIsFedora ; then
+        rlAssertRpm mariadb-server
+        rlAssertRpm mariadb
+        rlAssertRpm python2-mysql
+        cat >/etc/my.cnf.d/beaker.cnf <<EOF
+[mysqld]
+max_allowed_packet=50M
+character_set_server=utf8
+$MYSQL_EXTRA_CONFIG
+EOF
+        rlAssert0 "Wrote /etc/my.cnf.d/beaker.cnf" $?
+        rlServiceStart mariadb
+    elif rlIsRHEL 7 ; then
         rlAssertRpm rh-mariadb102-mariadb-server
         # This one gives us /usr/bin/mysql as a wrapper script:
         rlAssertRpm rh-mariadb102-mariadb-syspaths
@@ -89,7 +101,7 @@ $MYSQL_EXTRA_CONFIG
 EOF
         rlAssert0 "Wrote /etc/opt/rh/rh-mariadb102/my.cnf.d/beaker.cnf" $?
         rlServiceStart rh-mariadb102-mariadb
-    else
+    else # RHEL6
         rlAssertRpm mysql-server
         rlAssertRpm MySQL-python
         # Backup /etc/my.cnf and update the config
