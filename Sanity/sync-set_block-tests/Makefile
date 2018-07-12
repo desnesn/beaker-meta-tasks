@@ -55,6 +55,7 @@ $(METADATA): Makefile
 	@echo "TestTime:        45m" >> $(METADATA)
 	@echo "RunFor:          beaker" >> $(METADATA)
 	@echo "Requires:        beaker" >> $(METADATA)
+	@echo "Requires:        beakerlib" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
