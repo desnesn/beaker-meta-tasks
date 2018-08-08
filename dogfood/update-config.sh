@@ -29,7 +29,7 @@ if [ -e /etc/beaker/labcontroller.conf ] ; then
         $a POWER_ATTEMPTS = 2
         ' /etc/beaker/labcontroller.conf
     # Added in Beaker 26.0+
-    watchdog_script=$(echo /usr/lib/python2.6/site-packages/bkr/inttest/labcontroller/watchdog-script-test.sh)
+    watchdog_script=$(echo /usr/lib/python2.*/site-packages/bkr/inttest/labcontroller/watchdog-script-test.sh)
     if [ -e "$watchdog_script" ] ; then
         sed --regexp-extended --in-place -e "
             \$a WATCHDOG_SCRIPT = \"$watchdog_script\"
