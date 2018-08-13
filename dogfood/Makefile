@@ -50,6 +50,7 @@ $(METADATA): Makefile
 	@echo "Description:  Runs Beaker's internal test suite" >> $(METADATA)
 	@echo "TestTime:     6h" >> $(METADATA)
 	@echo "Requires:     python-nose" >> $(METADATA)  
+	@echo "Requires:     time" >> $(METADATA)
 #	@echo "Environment:  BEAKER_SKIP_INIT_DB=1" >> $(METADATA)
 	@echo "Environment:  BEAKER_CONFIG_FILE=/etc/beaker/server.cfg" >> $(METADATA)
 	@echo "Environment:  BEAKER_LABCONTROLLER_CONFIG_FILE=/etc/beaker/labcontroller.conf" >> $(METADATA)
