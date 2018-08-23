@@ -1,0 +1,2 @@
+This test intentionally exceeds its declared time limit,
+in order to trigger the harness local watchdog.

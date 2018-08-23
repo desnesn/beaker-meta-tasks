@@ -1,0 +1,7 @@
+[General]
+name=/distribution/beaker/Sanity/exceed-test-time
+
+[restraint]
+dependencies=beakerlib
+max_time=2m
+entry_point=./runtest.sh
