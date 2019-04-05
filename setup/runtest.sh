@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Copyright (c) 2006 Red Hat, Inc. All rights reserved. This copyrighted material 
-# is made available to anyone wishing to use, modify, copy, or
+# Copyright (c) 2006-2019 Red Hat, Inc. All rights reserved. This copyrighted
+# material is made available to anyone wishing to use, modify, copy, or
 # redistribute it subject to the terms and conditions of the GNU General
 # Public License v.2.
 #
@@ -167,14 +167,42 @@ __EOF__
     fi
 
     if [ -n "$OPENSTACK_IDENTITY_API_URL" ] ; then
-        rlPhaseStartTest "Configure Beaker for OpenStack"
+        rlPhaseStartTest "Configure Beaker with OpenStack login credentials"
         sed -i \
             -e "/^#openstack.identity_api_url /c openstack.identity_api_url = '$OPENSTACK_IDENTITY_API_URL'" \
             -e "/^#openstack.user_domain_name /c openstack.user_domain_name = '$OPENSTACK_BEAKER_USER_DOMAIN_NAME'" \
             -e "/^#openstack.username /c openstack.username = '$OPENSTACK_BEAKER_USERNAME'" \
             -e "/^#openstack.password /c openstack.password = '$OPENSTACK_BEAKER_PASSWORD'" \
             /etc/beaker/server.cfg
-        rlAssert0 "Added OpenStack settings to /etc/beaker/server.cfg" $?
+        rlAssert0 "Added OpenStack login credentials to /etc/beaker/server.cfg" $?
+        rlPhaseEnd
+    fi
+
+    if [ -n "$OPENSTACK_BEAKER_USER_DOMAIN_NAME" ] ; then
+        rlPhaseStartTest "Configure Beaker with OpenStack user domain name"
+        sed -i \
+            -e "/^#openstack.user_domain_name /c openstack.user_domain_name = '$OPENSTACK_BEAKER_USER_DOMAIN_NAME'" \
+            /etc/beaker/server.cfg
+        rlAssert0 "Added OpenStack user domain name to /etc/beaker/server.cfg" $?
+        rlPhaseEnd
+    fi
+
+    if [ -n "$OPENSTACK_EXTERNAL_NETWORK_NAME" ] ; then
+        rlPhaseStartTest "Configure Beaker with OpenStack external network name"
+        sed -i \
+            -e "/^#openstack.external_network_name /c openstack.external_network_name = '$OPENSTACK_EXTERNAL_NETWORK_NAME'" \
+            /etc/beaker/server.cfg
+        rlAssert0 "Added OpenStack external network name to /etc/beaker/server.cfg" $?
+        rlPhaseEnd
+    fi
+
+    # openstack.create_floating_ip is a boolean, so the value should not be in quotes
+    if [ -n "$OPENSTACK_CREATE_FLOATING_IP" ] ; then
+        rlPhaseStartTest "Configure Beaker with OpenStack create floating IP flag"
+        sed -i \
+            -e "/^#openstack.create_floating_ip /c openstack.create_floating_ip = \\$OPENSTACK_CREATE_FLOATING_IP" \
+            /etc/beaker/server.cfg
+        rlAssert0 "Added OpenStack create floating IP flag to /etc/beaker/server.cfg" $?
         rlPhaseEnd
     fi
 
