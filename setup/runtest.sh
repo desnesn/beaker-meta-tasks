@@ -170,7 +170,6 @@ __EOF__
         rlPhaseStartTest "Configure Beaker with OpenStack login credentials"
         sed -i \
             -e "/^#openstack.identity_api_url /c openstack.identity_api_url = '$OPENSTACK_IDENTITY_API_URL'" \
-            -e "/^#openstack.user_domain_name /c openstack.user_domain_name = '$OPENSTACK_BEAKER_USER_DOMAIN_NAME'" \
             -e "/^#openstack.username /c openstack.username = '$OPENSTACK_BEAKER_USERNAME'" \
             -e "/^#openstack.password /c openstack.password = '$OPENSTACK_BEAKER_PASSWORD'" \
             /etc/beaker/server.cfg
