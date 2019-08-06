@@ -83,5 +83,3 @@ $(METADATA): Makefile
 	@echo "Requires:     curl" >> $(METADATA)
 	@echo "Requires:     yum-utils" >> $(METADATA)
 
-# You may need other fields here; see the documentation
-	rhts-lint $(METADATA)
