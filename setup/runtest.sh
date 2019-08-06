@@ -60,6 +60,14 @@ __EOF__
     rlAssert0 "Wrote /etc/beaker/labcontroller.conf" $?
 }
 
+function Init()
+{
+    rlPhaseStartTest "Setup Beaker config folder"
+    rlRun "mkdir -p /etc/beaker/" 0
+    rlRun "chmod 755 /etc/beaker/" 0
+    rlPhaseEnd
+}
+
 function Client()
 {
     rlPhaseStartTest "Configure Beaker client"
@@ -400,24 +408,27 @@ if [[ "$(getenforce)" == "Enforcing" ]] ; then
     rlLogWarning "SELinux in enforcing mode, Beaker is not likely to work!"
 fi
 
-if $(echo $CLIENTS | grep -q $(hostname -f)); then
+if echo "$CLIENTS" | grep -q "$(hostname -f)"; then
     rlLog "Running as Lab Controller using Inventory: ${SERVERS}"
-    SERVER=$(echo $SERVERS | awk '{print $1}')
+    SERVER=$(echo "$SERVERS" | awk '{print $1}')
+    Init
     Client
     LabController
 fi
 
-if $(echo $SERVERS | grep -q $(hostname -f)); then
+if echo "$SERVERS" | grep -q "$(hostname -f)"; then
     rlLog "Running as Inventory using Lab Controllers: ${CLIENTS}"
+    Init
     Client
     Inventory
 fi
 
-if [ -z "$SERVERS" -o -z "$CLIENTS" ]; then
+if [ -z "$SERVERS" ] || [ -z "$CLIENTS" ]; then
     rlLog "Inventory=${SERVERS} LabController=${CLIENTS} Assuming Single Host Mode."
     CLIENTS=$STANDALONE
     SERVERS=$STANDALONE
-    SERVER=$(echo $SERVERS | awk '{print $1}')
+    SERVER=$(echo "$SERVERS" | awk '{print $1}')
+    Init
     Client
     Inventory
     LabController
