@@ -34,6 +34,7 @@ function run() {
 
 run beakerd_stop /sbin/service beakerd stop
 run yum_install yum install -y beaker-integration-tests$VERSION
+run downgrade_firefox yum downgrade -y firefox-52.7.0-1.el7_4.x86_64
 run create_migration_test_db mysql -u root -e "CREATE DATABASE beaker_migration_test; GRANT ALL ON beaker_migration_test.* TO beaker@localhost;"
 run update_config ./update-config.sh
 
